@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chess Game by Kushesh</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(145deg, #222, #444);
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      margin: 0;
+      justify-content: center;
+    }
+
+    h1 {
+      margin-bottom: 5px;
+      font-size: 2.2em;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      0% {
+        text-shadow: 0 0 5px #fff, 0 0 10px #0ff, 0 0 15px #0ff;
+        color: #0ff;
+      }
+      100% {
+        text-shadow: 0 0 10px #fff, 0 0 20px #00f, 0 0 30px #00f;
+        color: #00f;
+      }
+    }
+
+    #chessboard {
+      display: grid;
+      grid-template-columns: repeat(8, 80px);
+      grid-template-rows: repeat(8, 80px);
+      border: 4px solid #ccc;
+      box-shadow: 0 0 20px black;
+    }
+
+    .cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .white {
+      background-color: #f0d9b5;
+    }
+
+    .black {
+      background-color: #b58863;
+    }
+
+    .selected {
+      outline: 3px solid yellow;
+    }
+
+    .credit {
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+      color: #ccc;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+  <h1>♟️ Chess Game</h1>
+  <div class="credit">Created by <strong>Developer.Kushesh</strong></div>
+  <div id="chessboard"></div>
+
+  <script>
+    const board = document.getElementById('chessboard');
+    let selectedCell = null;
+
+    const initialBoard = [
+      ['♜','♞','♝','♛','♚','♝','♞','♜'],
+      ['♟','♟','♟','♟','♟','♟','♟','♟'],
+      ['','','','','','','',''],
+      ['','','','','','','',''],
+      ['','','','','','','',''],
+      ['','','','','','','',''],
+      ['♙','♙','♙','♙','♙','♙','♙','♙'],
+      ['♖','♘','♗','♕','♔','♗','♘','♖']
+    ];
+
+    let pieces = JSON.parse(JSON.stringify(initialBoard));
+
+    function renderBoard() {
+      board.innerHTML = '';
+      for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+          const cell = document.createElement('div');
+          cell.classList.add('cell', (row + col) % 2 === 0 ? 'white' : 'black');
+          cell.dataset.row = row;
+          cell.dataset.col = col;
+          cell.textContent = pieces[row][col];
+          board.appendChild(cell);
+
+          cell.addEventListener('click', () => onCellClick(row, col, cell));
+        }
+      }
+    }
+
+    function onCellClick(row, col, cell) {
+      if (selectedCell) {
+        const [prevRow, prevCol] = selectedCell;
+        pieces[row][col] = pieces[prevRow][prevCol];
+        pieces[prevRow][prevCol] = '';
+        selectedCell = null;
+        renderBoard();
+      } else {
+        if (pieces[row][col] !== '') {
+          selectedCell = [row, col];
+          cell.classList.add('selected');
+        }
+      }
+    }
+
+    renderBoard();
+  </script>
+</body>
+</html>
